@@ -1,0 +1,14 @@
+{
+  "/api": {
+    "target": "http://127.0.0.1:8081",
+    "secure": false,
+    "changeOrigin":false,
+    "logLevel": "debug"
+  },
+  "/realms/SELECTION-ENGINE": {
+    "target": "http://127.0.0.1:8080",
+    "secure": false,
+    "changeOrigin":false,
+    "logLevel": "debug"
+  }
+}

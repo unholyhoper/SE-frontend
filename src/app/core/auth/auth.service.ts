@@ -1,14 +1,20 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { catchError, Observable, of, switchMap, throwError } from 'rxjs';
 import { AuthUtils } from 'app/core/auth/auth.utils';
 import { UserService } from 'app/core/user/user.service';
+import {environment} from 'environments/environment';
+
+const BASE_PATH = environment.auth;
+
 
 @Injectable()
 export class AuthService
 {
     private _authenticated: boolean = false;
-
+    private options = {
+        headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
+    };
     /**
      * Constructor
      */
@@ -35,6 +41,18 @@ export class AuthService
     {
         return localStorage.getItem('accessToken') ?? '';
     }
+    /**
+     * Setter & getter for access token
+     */
+    set refreshToken(token: string)
+    {
+        localStorage.setItem('refreshToken', token);
+    }
+
+    get refreshToken(): string
+    {
+        return localStorage.getItem('refreshToken') ?? '';
+    }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
@@ -47,7 +65,7 @@ export class AuthService
      */
     forgotPassword(email: string): Observable<any>
     {
-        return this._httpClient.post('api/auth/forgot-password', email);
+        return this._httpClient.post(`${BASE_PATH}/forgot-password?email=${email}`, email);
     }
 
     /**
@@ -55,9 +73,10 @@ export class AuthService
      *
      * @param password
      */
-    resetPassword(password: string): Observable<any>
+    resetPassword(resetPasswordRequest: {password: string,token: String}): Observable<any>
     {
-        return this._httpClient.post('api/auth/reset-password', password);
+        return this._httpClient.post(`${BASE_PATH}/reset-password?token=${resetPasswordRequest.token}`,{'password' : resetPasswordRequest.password}
+        );
     }
 
     /**
@@ -73,11 +92,25 @@ export class AuthService
             return throwError('User is already logged in.');
         }
 
-        return this._httpClient.post('api/auth/sign-in', credentials).pipe(
-            switchMap((response: any) => {
+        // return this._httpClient.post('api/auth/sign-in', credentials).pipe(
 
+        let body = new URLSearchParams();
+        body.set('username', credentials.email);
+        body.set('password', credentials.password);
+        body.set('grant_type', 'password');
+        body.set('client_id', 'se-client');
+        body.set('client_secret', '8zBUd8l7k4Clx6R2BRMRQ5lOsQvmFXZq');
+        return this._httpClient.post(`${BASE_PATH}/protocol/openid-connect/token`
+            , body.toString(),
+            {
+                headers: new HttpHeaders()
+                    .set('Content-Type', 'application/x-www-form-urlencoded')
+            }).pipe(
+            switchMap((response: any) => {
+                console.log(response);
                 // Store the access token in the local storage
-                this.accessToken = response.accessToken;
+                this.accessToken = response.access_token;
+                this.refreshToken = response.refresh_token;
 
                 // Set the authenticated flag to true
                 this._authenticated = true;
@@ -96,10 +129,20 @@ export class AuthService
      */
     signInUsingToken(): Observable<any>
     {
+
+        let body = new URLSearchParams();
+        body.set('refresh_token', this.refreshToken);
+        body.set('grant_type', 'refresh_token');
+        body.set('client_id', 'se-client');
+        body.set('client_secret', '8zBUd8l7k4Clx6R2BRMRQ5lOsQvmFXZq');
+
         // Renew token
-        return this._httpClient.post('api/auth/refresh-access-token', {
-            accessToken: this.accessToken
-        }).pipe(
+        return this._httpClient.post(`${BASE_PATH}/protocol/openid-connect/token`,
+            body.toString()
+            , {
+                headers: new HttpHeaders()
+                    .set('Content-Type', 'application/x-www-form-urlencoded')
+            }).pipe(
             catchError(() =>
 
                 // Return false
@@ -108,7 +151,7 @@ export class AuthService
             switchMap((response: any) => {
 
                 // Store the access token in the local storage
-                this.accessToken = response.accessToken;
+                this.accessToken = response.access_token;
 
                 // Set the authenticated flag to true
                 this._authenticated = true;
@@ -142,9 +185,9 @@ export class AuthService
      *
      * @param user
      */
-    signUp(user: { name: string; email: string; password: string; company: string }): Observable<any>
+    signUp(user: { name: string; email: string; password: string; company: string; userName: string }): Observable<any>
     {
-        return this._httpClient.post('api/auth/sign-up', user);
+        return this._httpClient.post(`${BASE_PATH}/sign-up`, user);
     }
 
     /**
@@ -183,4 +226,10 @@ export class AuthService
         // If the access token exists and it didn't expire, sign in using it
         return this.signInUsingToken();
     }
+
+
+}
+export interface AccessToken {
+    access_token: string;
+    refresh_token: string;
 }
