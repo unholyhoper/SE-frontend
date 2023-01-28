@@ -11,6 +11,10 @@ import {DemoPlaceholderModule} from '../ui/page-layouts/common/demo-placeholder/
 import {LayoutOverviewModule} from '../ui/page-layouts/common/layout-overview/layout-overview.module';
 import {PropositionsComponent} from './propositions/propositions.component';
 import {PoliciesComponent} from './policies/policies.component';
+import {MatTableModule} from "@angular/material/table";
+import {MatCheckboxModule} from "@angular/material/checkbox";
+import {PolicyResolver} from "./solife.resolver";
+import {MatPaginatorModule} from "@angular/material/paginator";
 
 const solifeRoutes: Route[] = [
     {
@@ -18,7 +22,10 @@ const solifeRoutes: Route[] = [
         children: [
             {
                 path: 'policies',
-                component: PoliciesComponent
+                component: PoliciesComponent,
+                resolve: {
+                    policies: PolicyResolver,
+                }
             },
             {
                 path: 'propositions',
@@ -46,7 +53,10 @@ const solifeRoutes: Route[] = [
         SharedModule,
         DemoPlaceholderModule,
         DemoSidebarModule,
-        LayoutOverviewModule
+        LayoutOverviewModule,
+        MatTableModule,
+        MatCheckboxModule,
+        MatPaginatorModule
     ]
 })
 export class SolifeModule {

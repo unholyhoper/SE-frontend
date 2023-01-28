@@ -6,6 +6,7 @@ export const environment = {
     production: false,
     basePath: '/api',
     auth: '/realms/SELECTION-ENGINE',
+    policies: '/api/policies',
 
 };
 
