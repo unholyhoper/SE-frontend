@@ -12,25 +12,25 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 id: 'Level 1.1',
                 title: 'Batch configuration',
                 type: 'basic',
-                link: '/batch-config'
+                link: '/batch/config'
             },
             {
                 id: 'Level 1.2',
                 title: 'Batch jobs',
                 type: 'basic',
-                link: '/batch-jobs'
+                link: '/batch/jobs'
             },
             {
                 id: 'Level 1.3',
                 title: 'Launch batch job',
                 type: 'basic',
-                link: '/launch-batch-job'
+                link: '/batch/launch'
             }
         ]
     },
     {
         id: 'navigation-features.level.2',
-        title: 'Policies & Propositions',
+        title: 'Solife',
         icon: 'iconsmind:money_2',
         type: 'collapsable',
         children: [

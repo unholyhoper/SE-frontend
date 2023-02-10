@@ -76,6 +76,7 @@ export const appRoutes: Route[] = [
         children   : [
             {path: 'example', loadChildren: () => import('app/modules/admin/example/example.module').then(m => m.ExampleModule)},
             {path: 'solife', loadChildren: () => import('app/modules/solife/solife.module').then(m => m.SolifeModule)},
+            {path: 'batch', loadChildren: () => import('app/modules/batch/batch.module').then(m => m.BatchModule)},
         ]
     }
 ];
