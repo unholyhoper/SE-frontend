@@ -1,20 +1,26 @@
 import {NgModule} from '@angular/core';
 import {Route, RouterModule} from '@angular/router';
-import {MatButtonModule} from '@angular/material/button';
-import {MatIconModule} from '@angular/material/icon';
-import {MatMenuModule} from '@angular/material/menu';
-import {MatSidenavModule} from '@angular/material/sidenav';
-import {MatTabsModule} from '@angular/material/tabs';
-import {DemoSidebarModule} from '../ui/page-layouts/common/demo-sidebar/demo-sidebar.module';
-import {SharedModule} from 'app/shared/shared.module';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
+import { MatStepperModule } from '@angular/material/stepper';
+import { SharedModule } from 'app/shared/shared.module';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatTabsModule } from '@angular/material/tabs';
 import {DemoPlaceholderModule} from '../ui/page-layouts/common/demo-placeholder/demo-placeholder.module';
+import {DemoSidebarModule} from '../ui/page-layouts/common/demo-sidebar/demo-sidebar.module';
 import {LayoutOverviewModule} from '../ui/page-layouts/common/layout-overview/layout-overview.module';
-import {MatTableModule} from '@angular/material/table';
-import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatPaginatorModule} from '@angular/material/paginator';
+import { MatTableModule } from '@angular/material/table';
 import {BatchConfigComponent} from './config/batch-config.component';
 import {BatchJobsComponent} from './jobs/batch-jobs.component';
 import {LaunchBatchComponent} from './launch/launch-batch.component';
+import {TableComponent} from "../solife/thirdparty/table/table.component";
+import {SolifeModule} from "../solife/solife.module";
 
 const solifeRoutes: Route[] = [
     {
@@ -49,7 +55,6 @@ const solifeRoutes: Route[] = [
         RouterModule.forChild(solifeRoutes),
         MatButtonModule,
         MatIconModule,
-        MatMenuModule,
         MatSidenavModule,
         MatTabsModule,
         SharedModule,
@@ -58,7 +63,15 @@ const solifeRoutes: Route[] = [
         LayoutOverviewModule,
         MatTableModule,
         MatCheckboxModule,
-        MatPaginatorModule
+        MatPaginatorModule,
+        MatStepperModule,
+        MatRadioModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatStepperModule,
+        MatInputModule,
+        SolifeModule
+
     ]
 })
 export class BatchModule {

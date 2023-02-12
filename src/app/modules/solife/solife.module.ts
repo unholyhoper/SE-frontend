@@ -15,6 +15,7 @@ import {MatTableModule} from "@angular/material/table";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {PolicyResolver} from "./solife.resolver";
 import {MatPaginatorModule} from "@angular/material/paginator";
+import {TableComponent} from "./thirdparty/table/table.component";
 
 const solifeRoutes: Route[] = [
     {
@@ -42,6 +43,10 @@ const solifeRoutes: Route[] = [
     declarations: [
         PoliciesComponent,
         PropositionsComponent,
+        TableComponent
+    ],
+    exports: [
+        TableComponent
     ],
     imports: [
         RouterModule.forChild(solifeRoutes),
