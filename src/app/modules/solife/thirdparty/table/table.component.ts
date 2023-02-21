@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, Input, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
-import {Policy, ThirdParty} from "../../solife.types";
+import {Policy, ThirdPartyLegacy} from "../../solife.types";
 import {SelectionModel} from "@angular/cdk/collections";
 import {MatPaginator} from "@angular/material/paginator";
 import {takeUntil} from "rxjs";
@@ -12,13 +12,17 @@ import {takeUntil} from "rxjs";
 })
 export class TableComponent implements OnInit, AfterViewInit
 {
-    dataSource: MatTableDataSource<any>;
 
-    selection = new SelectionModel<ThirdParty>(true, []);
-    @Input() persistents: any[];
+    selection = new SelectionModel<ThirdPartyLegacy>(true, []);
+    @Input() data: any[];
 
     @Input() displayedColumns: string[];
+    @Input() dataColumns: string[];
+
+    @Input() dataSource: MatTableDataSource<any>;
         // = ['select', 'position', 'name', 'weight', 'symbol'];
+
+    tableDisplay :any[];
     //
     @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -60,16 +64,9 @@ export class TableComponent implements OnInit, AfterViewInit
     }
 
     ngOnInit(): void {
-        // this._solifeService.policies$
-        //     .pipe(takeUntil(this._unsubscribeAll))
-        //     .subscribe((policies: Policy[]) => {
-        //
-        //         // Update the brands
-        //TODO initialise here
-                this.dataSource = new MatTableDataSource<any>(this.persistents);
-            //     // this._changeDetectorRef.markForCheck();
-        //     // Mark for check
-        // });
+        this.tableDisplay[0] = this.displayedColumns;
+        this.tableDisplay[1] = this.dataColumns;
+
     }
 
     cancelSelection(): void {

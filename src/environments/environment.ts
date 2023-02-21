@@ -7,6 +7,7 @@ export const environment = {
     basePath: '/api',
     auth: '/realms/SELECTION-ENGINE',
     policies: '/api/policies',
+    thirdparties: '/api/thirdparties',
 
 };
 

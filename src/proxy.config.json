@@ -11,6 +11,12 @@
         "changeOrigin": false,
         "logLevel": "debug"
     },
+    "/api/thirdparties": {
+        "target": "http://127.0.0.1:9011",
+        "secure": false,
+        "changeOrigin": false,
+        "logLevel": "debug"
+    },
     "/api/batch": {
         "target": "http://127.0.0.1:8081",
         "secure": false,
