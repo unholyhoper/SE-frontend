@@ -122,7 +122,7 @@ export class LaunchBatchComponent implements OnInit, AfterViewInit, AfterContent
     /** Whether the number of selected elements matches the total number of rows. */
     isAllSelected() {
         const numSelected = this.selection.selected.length;
-        const numRows = this.dataSource?.data.length;
+        const numRows = this.dataSource.data.length;
         return numSelected === numRows;
 
     }
@@ -142,22 +142,22 @@ export class LaunchBatchComponent implements OnInit, AfterViewInit, AfterContent
         if (!row) {
             return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
         }
+        this.selectedThirdPartyNames = this.selection.selected.map(value => value.name);
 
 
         return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.identifier + 1}`;
     }
 
     submit(): void {
-        this.horizontalStepperForm.get('step1.type').value
+        this.horizontalStepperForm.get('step1.type').value;
 
     }
 
-    getSelectedPolicies(): void {
-        this.selectedThirdPartyNames = this.selection.selected.map(value => value.name);
-        this.selectedThirdPartyIdentifiers = this.selection.selected.map(value => value.identifier);
-        console.log(this.selection.selected.map(value => value.identifier));
-        this._solifeService.getPoliciesByThirdParty(this.selection.selected.map(value => value.identifier).join(',')).subscribe((response) => {
+    getSelectedPolicies() : void{
+        console.log(this.selection.selected);
+        this._solifeService.getPoliciesByThirdParty(this.selection.selected.map(tp => tp.identifier).join(',')).subscribe((response) => {
             this.policies = response.map(policy => policy.policyNumber);
+            console.log("policies",this.policies)
             ;
         });
     }
