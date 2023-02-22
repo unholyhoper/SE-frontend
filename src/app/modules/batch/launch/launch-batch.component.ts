@@ -14,6 +14,7 @@ import {Subject, takeUntil} from "rxjs";
 import {MatTableDataSource} from "@angular/material/table";
 import {SelectionModel} from "@angular/cdk/collections";
 import {MatPaginator} from "@angular/material/paginator";
+import {BatchService} from "./launch-batch.service";
 
 @Component({
     selector: 'simple-fullwidth-1-content-scroll',
@@ -39,6 +40,8 @@ export class LaunchBatchComponent implements OnInit, AfterViewInit, AfterContent
     selectedThirdPartyNames: string[];
 
     policies: string[];
+
+    dataSelected: boolean;
     @ViewChild(MatPaginator) paginator: MatPaginator;
     // name
     //nationalIdentifierCountry
@@ -51,7 +54,7 @@ export class LaunchBatchComponent implements OnInit, AfterViewInit, AfterContent
     /**
      * Constructor
      */
-    constructor(private _formBuilder: FormBuilder, private _solifeService: SolifeService, private _changeDetectorRef: ChangeDetectorRef) {
+    constructor(private _formBuilder: FormBuilder, private _solifeService: SolifeService,private _batchService: BatchService, private _changeDetectorRef: ChangeDetectorRef) {
     }
 
     ngAfterViewInit(): void {
@@ -74,7 +77,7 @@ export class LaunchBatchComponent implements OnInit, AfterViewInit, AfterContent
                 // about: ['']
             }),
             step3: this._formBuilder.group({
-                byEmail: this._formBuilder.group({
+                parameters: this._formBuilder.group({
                     mailNotification: [true],
                     jsonExtraction: [false],
                     messages: [true]
@@ -111,8 +114,6 @@ export class LaunchBatchComponent implements OnInit, AfterViewInit, AfterContent
 
     onSelectionChange(event): void {
         console.log(event.value);
-        this.selectedThirdPartyIdentifiers = this.selection.selected.map(value => value.identifier);
-        console.log(this.selectedThirdPartyIdentifiers);
         // perform some logic based on the selected value
 
 
@@ -149,17 +150,28 @@ export class LaunchBatchComponent implements OnInit, AfterViewInit, AfterContent
     }
 
     submit(): void {
-        this.horizontalStepperForm.get('step1.type').value;
-
+        const policyNumbers: string[] = this.horizontalStepperForm.get('step2.policies').value;
+        const mailNotification: boolean = this.horizontalStepperForm.get('step3.parameters.mailNotification').value;
+        const jsonExtraction: boolean = this.horizontalStepperForm.get('step3.parameters.jsonExtraction').value;
+        console.log('policyNumbers ',policyNumbers);
+        console.log('mailNotification ',mailNotification);
+        console.log('jsonExtraction ',jsonExtraction);
+        this._batchService.launchBatch(policyNumbers,mailNotification,jsonExtraction).subscribe((response) => {
+            // this.policies = response.map(policy => policy.policyNumber);
+            // console.log("policies", this.policies)
+        });
     }
 
-    getSelectedPolicies() : void{
+    updateSelectedData(): void {
         console.log(this.selection.selected);
+        this.selectedThirdPartyIdentifiers = this.selection.selected.map(value => value.identifier);
         this._solifeService.getPoliciesByThirdParty(this.selection.selected.map(tp => tp.identifier).join(',')).subscribe((response) => {
             this.policies = response.map(policy => policy.policyNumber);
-            console.log("policies",this.policies)
+            console.log("policies", this.policies)
             ;
         });
+        console.log(this.selectedThirdPartyIdentifiers);
+
     }
 
 }

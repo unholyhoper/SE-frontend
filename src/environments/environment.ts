@@ -8,6 +8,7 @@ export const environment = {
     auth: '/realms/SELECTION-ENGINE',
     policies: '/api/policies',
     thirdparties: '/api/thirdparties',
+    batch: '/batch',
 
 };
 

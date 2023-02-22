@@ -238,7 +238,7 @@
 
                                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"
-                                    (click)="selection.toggle(row);  getSelectedPolicies()">
+                                    (click)="selection.toggle(row);  updateSelectedData()">
                                 </tr>
                             </table>
                             <mat-paginator [pageSizeOptions]="[5, 10, 20]"
@@ -266,7 +266,7 @@
                                 class="px-8"
                                 mat-flat-button
                                 [color]="'primary'"
-                                [disabled]="horizontalStepperStep2.stepControl.pristine || horizontalStepperStep2.stepControl.invalid"
+                                    [disabled]=" this.selection.isEmpty() &&( horizontalStepperStep2.stepControl.pristine || horizontalStepperStep2.stepControl.invalid) "
                                 type="button"
                                 matStepperNext>
                                 Next
@@ -286,7 +286,7 @@
                                 <span class="font-medium mb-2">By Email</span>
                                 <div
                                     class="flex flex-col"
-                                    [formGroupName]="'byEmail'">
+                                    [formGroupName]="'parameters'">
                                     <mat-checkbox
                                         class="mb-1"
                                         [color]="'primary'"
@@ -363,7 +363,7 @@
                                 Back
                             </button>
                             <button
-                                class="px-8"
+                                class="px-8 mr-2"
                                 mat-flat-button
                                 [color]="'primary'"
                                 type="reset"
@@ -375,7 +375,7 @@
                                 mat-flat-button
                                 [color]="'primary'"
                                 type="reset"
-                                (click)="horizontalStepper.reset();">
+                                (click)="submit()">
                                 Submit
                             </button>
                         </div>

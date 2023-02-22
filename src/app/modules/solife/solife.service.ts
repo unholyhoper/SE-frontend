@@ -6,6 +6,7 @@ import {environment} from "../../../environments/environment";
 
 const POLICIES = environment.policies;
 const THIRD_PARTIES = environment.thirdparties;
+const BATCH = environment.batch;
 
 @Injectable({
     providedIn: 'root'
