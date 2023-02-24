@@ -6,3 +6,13 @@ export interface Batch {
 
 }
 
+
+export interface JobExecution {
+    jobParameters?: string[];
+    status?: string;
+    startTime?: string;
+    endTime?: string;
+
+
+}
+
