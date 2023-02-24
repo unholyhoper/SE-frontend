@@ -41,6 +41,12 @@ export class SolifeService
             })
         );
     }
+    thirdPartiesByType(type: string): Observable<ThirdParty[]>
+    {
+        let body = new HttpParams();
+        body = body.set('type', type);
+        return this._httpClient.get<ThirdParty[]>(`${THIRD_PARTIES}?type=${type}`);
+    }
 
     getPoliciesByThirdParty(externalIDs: any): Observable<Policy[]> {
         console.log('external ids ' ,externalIDs);

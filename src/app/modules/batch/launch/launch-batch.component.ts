@@ -39,7 +39,7 @@ export class LaunchBatchComponent implements OnInit, AfterViewInit, AfterContent
     selectedThirdPartyIdentifiers: number[];
     selectedThirdPartyNames: string[];
 
-    policies: string[];
+    selectedPolicies: string[];
 
     dataSelected: boolean;
     @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -54,11 +54,14 @@ export class LaunchBatchComponent implements OnInit, AfterViewInit, AfterContent
     /**
      * Constructor
      */
-    constructor(private _formBuilder: FormBuilder, private _solifeService: SolifeService,private _batchService: BatchService, private _changeDetectorRef: ChangeDetectorRef) {
+    constructor(private _formBuilder: FormBuilder, private _solifeService: SolifeService, private _batchService: BatchService, private _changeDetectorRef: ChangeDetectorRef) {
     }
 
     ngAfterViewInit(): void {
-        this.dataSource.paginator = this.paginator;
+        if (this.dataSelected !== undefined) {
+            this.dataSource.paginator = this.paginator;
+
+        }
     }
 
     ngOnInit(): void {
@@ -67,7 +70,7 @@ export class LaunchBatchComponent implements OnInit, AfterViewInit, AfterContent
         this.horizontalStepperForm = this._formBuilder.group({
             step1: this._formBuilder.group({
                 type: ['', Validators.required],
-                language: ['', Validators.required]
+                subType: ['', Validators.required]
             }),
             step2: this._formBuilder.group({
                 firstName: ['', Validators.required],
@@ -86,20 +89,20 @@ export class LaunchBatchComponent implements OnInit, AfterViewInit, AfterContent
             })
         });
 
-        this._solifeService.thirdParties$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((policies: ThirdParty[]) => {
-
-                // Update the brands
-                this.data = policies;
-                // this.dataSource = new MatTableDataSource<ThirdParty>(this.data);
-                this.dataSource = new MatTableDataSource<ThirdParty>(this.data);
-                // this.dataSource.paginator=this.paginator;
-                // Mark for check
-                // this._changeDetectorRef.markForCheck();
-            });
+        // this._solifeService.thirdParties$
+        //     .pipe(takeUntil(this._unsubscribeAll))
+        //     .subscribe((policies: ThirdParty[]) => {
+        //
+        //         // Update the brands
+        //         this.data = policies;
+        //         // this.dataSource = new MatTableDataSource<ThirdParty>(this.data);
+        //         this.dataSource = new MatTableDataSource<ThirdParty>(this.data);
+        //         // this.dataSource.paginator=this.paginator;
+        //         // Mark for check
+        //         // this._changeDetectorRef.markForCheck();
+        //     });
         // this.dataSource.paginator = this.paginator;
-// console.log(this.horizontalStepperForm.get('step1.type').value);
+        console.log(this.horizontalStepperForm.get('step1.type').value);
     }
 
     ngAfterContentChecked() {
@@ -123,7 +126,7 @@ export class LaunchBatchComponent implements OnInit, AfterViewInit, AfterContent
     /** Whether the number of selected elements matches the total number of rows. */
     isAllSelected() {
         const numSelected = this.selection.selected.length;
-        const numRows = this.dataSource.data.length;
+        const numRows = this.dataSource?.data.length;
         return numSelected === numRows;
 
     }
@@ -153,12 +156,11 @@ export class LaunchBatchComponent implements OnInit, AfterViewInit, AfterContent
         const policyNumbers: string[] = this.horizontalStepperForm.get('step2.policies').value;
         const mailNotification: boolean = this.horizontalStepperForm.get('step3.parameters.mailNotification').value;
         const jsonExtraction: boolean = this.horizontalStepperForm.get('step3.parameters.jsonExtraction').value;
-        console.log('policyNumbers ',policyNumbers);
-        console.log('mailNotification ',mailNotification);
-        console.log('jsonExtraction ',jsonExtraction);
-        this._batchService.launchBatch(policyNumbers,mailNotification,jsonExtraction).subscribe((response) => {
-            // this.policies = response.map(policy => policy.policyNumber);
-            // console.log("policies", this.policies)
+        const thirdPartiesExternalIds: string[] = this.horizontalStepperForm.get('step2.firstName').value;
+        console.log('policyNumbers ', policyNumbers);
+        console.log('mailNotification ', mailNotification);
+        console.log('jsonExtraction ', jsonExtraction);
+        this._batchService.launchBatch(policyNumbers, mailNotification, jsonExtraction, thirdPartiesExternalIds).subscribe((response) => {
         });
     }
 
@@ -166,12 +168,23 @@ export class LaunchBatchComponent implements OnInit, AfterViewInit, AfterContent
         console.log(this.selection.selected);
         this.selectedThirdPartyIdentifiers = this.selection.selected.map(value => value.identifier);
         this._solifeService.getPoliciesByThirdParty(this.selection.selected.map(tp => tp.identifier).join(',')).subscribe((response) => {
-            this.policies = response.map(policy => policy.policyNumber);
-            console.log("policies", this.policies)
+            this.selectedPolicies = response.map(policy => policy.policyNumber);
+            console.log("policies", this.selectedPolicies)
             ;
         });
         console.log(this.selectedThirdPartyIdentifiers);
 
     }
 
+    loadData(): void {
+        this._solifeService.thirdPartiesByType(this.horizontalStepperForm.get('step1.subType').value)
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((policies: ThirdParty[]) => {
+                this.data = policies;
+                this.dataSource = new MatTableDataSource<ThirdParty>(this.data);
+                this._changeDetectorRef.detectChanges();
+                this.dataSource.paginator = this.paginator;
+
+            });
+    }
 }

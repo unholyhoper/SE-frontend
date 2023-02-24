@@ -14,11 +14,12 @@ export class BatchService
     constructor(private _httpClient: HttpClient)
     {
     }
-    launchBatch(policyNumbers: any, mailNotification: boolean, jsonExtraction: boolean): Observable<Batch> {
+    launchBatch(policyNumbers: any, mailNotification: boolean, jsonExtraction: boolean,thirdPartiesExternalIds: string[]): Observable<Batch> {
         let body = new HttpParams();
         body = body.set('policyNumbers', policyNumbers);
         body = body.set('mailNotification', mailNotification);
         body = body.set('jsonExtraction', jsonExtraction);
+        body = body.set('externalIDs', thirdPartiesExternalIds.join(','));
         return this._httpClient.post<Batch>(`${BATCH}/start`, body);
     }
 }
