@@ -21,6 +21,7 @@ import {BatchJobsComponent} from './jobs/batch-jobs.component';
 import {LaunchBatchComponent} from './launch/launch-batch.component';
 import {TableComponent} from "../solife/thirdparty/table/table.component";
 import {SolifeModule} from "../solife/solife.module";
+import {JobExecutionsResolver} from "./batch.resolvers";
 
 const solifeRoutes: Route[] = [
     {
@@ -32,7 +33,10 @@ const solifeRoutes: Route[] = [
             },
             {
                 path: 'jobs',
-                component: BatchJobsComponent
+                component: BatchJobsComponent,
+                resolve  : {
+                    jobs    : JobExecutionsResolver,
+                }
             },
             {
                 path: 'launch',

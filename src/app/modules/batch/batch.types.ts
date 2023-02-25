@@ -8,6 +8,8 @@ export interface Batch {
 
 
 export interface JobExecution {
+
+    id: number;
     jobParameters?: string[];
     status?: string;
     startTime?: string;
@@ -16,3 +18,12 @@ export interface JobExecution {
 
 }
 
+export interface BatchJobPagination
+{
+    length: number;
+    size: number;
+    page: number;
+    lastPage: number;
+    startIndex: number;
+    endIndex: number;
+}
